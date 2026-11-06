@@ -1,0 +1,14 @@
+// EDIT ME: media files, placed in /public. Names and wording are in messages.ts.
+export const proposal = {
+  /** Your WhatsApp number with country code and no +, e.g. "201001234567". Empty hides the button. */
+  whatsappNumber: "201125529103",
+
+  media: {
+    /** Background audio. Until this file exists, a soft generated score plays. */
+    music: "/audio/theme.mp3",
+    /** Plays once, the moment the ring box opens. */
+    ringOpen: "/audio/ring-open.mp3",
+    /** Your voice, 30–60 seconds, played right before the question. Skipped if missing. */
+    voice: "/audio/voice.mp3",
+  },
+};

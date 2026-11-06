@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@theme {
+  --color-midnight: #1c0811;
+  --color-burgundy: #4a1728;
+  --color-rose-gold: #a77b63;
+  --color-champagne: #e9dccb;
+
+  --font-display: var(--font-arabic-display), serif;
+  --font-body: var(--font-arabic-body), system-ui, sans-serif;
+  --font-script: var(--font-arabic-script), serif;
+}
+
+/*
+ * Each language uses only its own fonts. They can't share one stack, because
+ * Next's fallback font for the first would catch the other language's letters
+ * and show a different system font on every device.
+ */
+html[dir="ltr"] {
+  --font-display: var(--font-latin-display), serif;
+  --font-body: var(--font-latin-body), system-ui, sans-serif;
+  --font-script: var(--font-latin-script), serif;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--color-midnight);
+  color: var(--color-champagne);
+  font-family: var(--font-body);
+  overflow: hidden;
+  /* Stops pull-to-refresh from reloading the story by accident. */
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* "safe" keeps the top reachable when content is taller than a small screen. */
+  justify-content: safe center;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 4.5rem) 1.5rem
+    calc(env(safe-area-inset-bottom) + 3.5rem);
+}
+
+/* Each character or word starts hidden; GSAP timelines bring it in. */
+[data-unit] {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.35em);
+  will-change: opacity, transform;
+}
+
+/* The wine of the ring box, lit from the center. */
+.wine-stage {
+  background: radial-gradient(ellipse at 50% 42%, #5a1d31 0%, #3a1120 48%, #1c0811 100%);
+}
+
+.spotlight {
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 50%,
+    rgb(233 220 203 / 0.16) 0%,
+    rgb(167 123 99 / 0.09) 40%,
+    transparent 72%
+  );
+}
+
+.vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 45%,
+    rgb(18 4 10 / 0.62) 100%
+  );
+}
+
+.film-grain {
+  inset: -50%;
+  opacity: 0.075;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  will-change: transform;
+  animation: grain 0.9s steps(5) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-2%, 3%); }
+  80% { transform: translate(4%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+
+.ken-burns {
+  animation: ken-burns 26s ease-out both;
+}
+
+@keyframes ken-burns {
+  from { transform: scale(1.14); }
+  to { transform: scale(1); }
+}
+
+.glint {
+  animation: glint 3.4s ease-in-out infinite;
+}
+
+@keyframes glint {
+  0%, 100% { opacity: 0.22; transform: scale(0.85) rotate(0deg); }
+  50% { opacity: 0.75; transform: scale(1.1) rotate(45deg); }
+}
+
+.figure-sway {
+  animation: figure-sway 4.5s ease-in-out infinite;
+}
+.figure-sway-alt {
+  animation-delay: -2.2s;
+}
+@keyframes figure-sway {
+  0%, 100% { transform: rotate(-1.6deg); }
+  50% { transform: rotate(1.6deg); }
+}
+
+.prop-float {
+  animation: prop-float 3.6s ease-in-out infinite;
+}
+@keyframes prop-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film-grain,
+  .ken-burns,
+  .glint,
+  .figure-sway,
+  .prop-float {
+    animation: none;
+  }
+  .glint {
+    opacity: 0.6;
+  }
+}
