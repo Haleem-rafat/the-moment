@@ -11,7 +11,7 @@ Live at https://moment.framecasts.com
 3. **Frames:** animated illustrations in place of photos, each with a personal line.
 4. **Why you:** five cards, each revealing a quality when touched.
 5. **Promise:** a written promise, line by line.
-6. **Finale:** a 3D ring box opens to its own music, then the voice message, then the question.
+6. **Finale:** a 3D ring box opens to its own music, then the question, as text only.
 
 The answers on the final screen:
 
@@ -46,15 +46,9 @@ Audio files live in `public/audio/`:
 | --- | --- |
 | `theme.mp3` | Background music for the whole story |
 | `ring-open.mp3` | Once, as the ring box opens |
-| `voice.mp3` | The voice message, right before the question |
+| `typing.mp3` | Keyboard sound while text appears, after her first tap |
 
-`voice.mp3` is currently AI-generated. To use your own recording, replace the file and deploy:
-
-```bash
-ffmpeg -i recording.m4a -b:a 64k -ac 1 public/audio/voice.mp3
-```
-
-Keep files small for slow connections. If `theme.mp3` is missing, a soft generated score plays. If `voice.mp3` is missing, that step is skipped.
+Keep files small for slow connections. If `theme.mp3` is missing, a soft generated score plays.
 
 ## WhatsApp button
 
@@ -83,6 +77,10 @@ Each project gets its own container and subdomain. Full steps are in `/srv/apps/
 ```bash
 /srv/apps/bin/app-site my-app my-app.framecasts.com
 ```
+
+## Start again
+
+A "Start again" button in the top bar clears all progress and returns to the first screen. It asks once, so a stray tap can't lose her place.
 
 ## Before sharing the link
 

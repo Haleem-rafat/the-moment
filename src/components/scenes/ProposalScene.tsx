@@ -18,7 +18,6 @@ import { MUSIC_LEVEL } from "@/lib/constants";
 
 const RingBox = dynamic(() => import("@/components/3d/RingBox"), { ssr: false });
 
-type Stage = RingPhase | "voice";
 type Answer = "asking" | "moment" | "yes";
 
 const RING_LOAD_TIMEOUT_MS = 20000;
@@ -50,10 +49,10 @@ const rise = (delay: number) => ({
 });
 
 export function ProposalScene() {
-  const { setMusicLevel, playVoice, stopVoice, playRingMusic, fadeRingMusic } = useAudio();
+  const { setMusicLevel, playRingMusic, fadeRingMusic } = useAudio();
   const { finale } = useMessages();
   const reduced = useReducedMotion();
-  const [stage, setStage] = useState<Stage>("dark");
+  const [stage, setStage] = useState<RingPhase>("dark");
   const [spotlight, setSpotlight] = useState(false);
   const [petals, setPetals] = useState(0);
   const [burst, setBurst] = useState(0);
@@ -62,7 +61,6 @@ export function ProposalScene() {
   const [webgl, setWebgl] = useState(true);
   const [ringReady, setRingReady] = useState(false);
   const timeline = useRef<gsap.core.Timeline | null>(null);
-  const skipped = useRef(false);
 
   useEffect(() => {
     if (!supportsWebGL()) {
@@ -101,35 +99,23 @@ export function ProposalScene() {
     setMusicLevel(MUSIC_LEVEL.swell, 3000);
   }, [fadeRingMusic, setMusicLevel]);
 
-  // The voice comes last: the final thing she hears before the question.
-  const runVoice = useCallback(async () => {
-    fadeRingMusic();
-    setMusicLevel(MUSIC_LEVEL.underVoice, 1500);
-    setStage("voice");
-    await playVoice();
-    if (!skipped.current) showQuestion();
-  }, [fadeRingMusic, playVoice, setMusicLevel, showQuestion]);
-
   useEffect(() => {
-    skipped.current = false;
     setMusicLevel(MUSIC_LEVEL.hush, 2200);
     if (!ringReady) return;
 
     if (reduced) {
       const tl = gsap.timeline();
-      tl.call(playRingMusic, undefined, 0.2).call(() => void runVoice(), undefined, 9);
+      tl.call(playRingMusic, undefined, 0.2).call(showQuestion, undefined, 9);
       timeline.current = tl;
       return () => {
-        skipped.current = true;
         tl.kill();
-        stopVoice();
       };
     }
 
     const tl = gsap.timeline();
-    tl.call(() => setSpotlight(true), undefined, 2)
-      .call(() => setStage("box"), undefined, 3.2)
-      .call(() => setStage("zoom"), undefined, 5.4)
+    tl.call(() => setSpotlight(true), undefined, 0.3)
+      .call(() => setStage("box"), undefined, 1)
+      .call(() => setStage("zoom"), undefined, 2.8)
       .call(
         () => {
           setStage("open");
@@ -137,24 +123,20 @@ export function ProposalScene() {
           playRingMusic();
         },
         undefined,
-        9.2,
+        5.8,
       )
-      .call(() => setStage("ring"), undefined, 11)
-      .call(() => setPetals(22), undefined, 12.4)
-      .call(() => void runVoice(), undefined, 19);
+      .call(() => setStage("ring"), undefined, 7.4)
+      .call(() => setPetals(22), undefined, 8.8)
+      .call(showQuestion, undefined, 13);
     timeline.current = tl;
 
     return () => {
-      skipped.current = true;
       tl.kill();
-      stopVoice();
     };
-  }, [playRingMusic, reduced, ringReady, runVoice, setMusicLevel, stopVoice]);
+  }, [playRingMusic, reduced, ringReady, setMusicLevel, showQuestion]);
 
   const skip = () => {
-    skipped.current = true;
     timeline.current?.kill();
-    stopVoice();
     showQuestion();
   };
 
@@ -178,9 +160,8 @@ export function ProposalScene() {
     setMusicLevel(MUSIC_LEVEL.swell, 2500);
   };
 
-  const ringPhase: RingPhase = stage === "voice" ? "ring" : stage;
   const asked = stage === "question";
-  const lidOpen = ringPhase === "open" || ringPhase === "ring" || ringPhase === "question";
+  const lidOpen = stage === "open" || stage === "ring" || stage === "question";
   const fallback = <RingFallback open={lidOpen} />;
 
   return (
@@ -195,37 +176,13 @@ export function ProposalScene() {
 
       {webgl ? (
         <SceneBoundary fallback={fallback}>
-          <RingBox phase={ringPhase} instant={Boolean(reduced)} />
+          <RingBox phase={stage} instant={Boolean(reduced)} />
         </SceneBoundary>
       ) : (
         fallback
       )}
 
       <RosePetals amount={petals} burst={burst} />
-
-      <AnimatePresence>
-        {stage === "voice" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.8 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-x-0 z-30 flex flex-col items-center gap-2"
-            style={{ bottom: "calc(env(safe-area-inset-bottom) + 3.5rem)" }}
-          >
-            <span className="flex h-6 items-center gap-1" aria-hidden>
-              {[0, 1, 2, 3, 4].map((i) => (
-                <motion.span
-                  key={i}
-                  className="w-0.5 rounded-full bg-champagne"
-                  animate={{ height: [5, 20, 8, 15, 5] }}
-                  transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.14, ease: "easeInOut" }}
-                />
-              ))}
-            </span>
-            <span className="text-xs">{finale.voiceLabel}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {asked && (
         <div

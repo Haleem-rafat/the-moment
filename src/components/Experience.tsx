@@ -7,6 +7,7 @@ import { ParticleBackground } from "./animations/ParticleBackground";
 import { SceneTransition } from "./animations/SceneTransition";
 import { InvitationScene } from "./scenes/InvitationScene";
 import { ProgressIndicator } from "./ui/ProgressIndicator";
+import { RestartButton } from "./ui/RestartButton";
 import { SoundToggle } from "./ui/SoundToggle";
 import { useAudio } from "@/hooks/useAudio";
 import { useLocale, useMessages } from "@/hooks/useLocale";
@@ -94,6 +95,7 @@ export function Experience() {
                 {ui.switchLanguage}
               </button>
             )}
+            {index > 0 && <RestartButton />}
             <SoundToggle />
           </div>
         </header>

@@ -15,10 +15,10 @@ export function MysteryScene({ onNext, revisit }: SceneProps) {
   const { mystery, secretMessage, ui } = useMessages();
 
   const { root, done, skip } = useSceneTimeline(
-    (tl) => {
-      tl.to("[data-spotlight]", { opacity: 1, duration: 2 }, 0);
-      revealText(tl, '[data-reveal="line-0"]', 0.6, { stagger: 0.03 });
-      revealText(tl, '[data-reveal="line-1"]', ">+0.8", { stagger: 0.045 });
+    (tl, sound) => {
+      tl.to("[data-spotlight]", { opacity: 1, duration: 1.2 }, 0);
+      revealText(tl, '[data-reveal="line-0"]', 0.1, { stagger: 0.09, sound });
+      revealText(tl, '[data-reveal="line-1"]', ">+0.3", { stagger: 0.09, sound });
     },
     { instant: revisit },
   );

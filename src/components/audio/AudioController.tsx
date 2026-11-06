@@ -10,10 +10,8 @@ import { proposal } from "@/data/proposal";
 export function AudioController({ children }: { children: React.ReactNode }) {
   const [muted, setMuted] = useState(false);
   const music = useRef<HowlType | null>(null);
-  const voice = useRef<HowlType | null>(null);
   const ringMusic = useRef<HowlType | null>(null);
-  const voiceReady = useRef(false);
-  const finishVoice = useRef<((played: boolean) => void) | null>(null);
+  const typing = useRef<HowlType | null>(null);
   const synth = useRef<AmbientSynth | null>(null);
   const musicMissing = useRef(false);
   const started = useRef(false);
@@ -45,23 +43,14 @@ export function AudioController({ children }: { children: React.ReactNode }) {
         },
       });
       ringMusic.current = new Howl({ src: [proposal.media.ringOpen], preload: false });
-      voice.current = new Howl({
-        src: [proposal.media.voice],
-        preload: false,
-        onload: () => {
-          voiceReady.current = true;
-        },
-        onend: () => finishVoice.current?.(true),
-        onloaderror: () => finishVoice.current?.(false),
-        onplayerror: () => finishVoice.current?.(false),
-      });
+      typing.current = new Howl({ src: [proposal.media.typing], loop: true, volume: 0.9, preload: false });
     });
 
     return () => {
       cancelled = true;
       music.current?.unload();
-      voice.current?.unload();
       ringMusic.current?.unload();
+      typing.current?.unload();
       synth.current?.stop();
       synth.current = null;
       started.current = false;
@@ -82,8 +71,8 @@ export function AudioController({ children }: { children: React.ReactNode }) {
   const start = useCallback(() => {
     if (started.current) return;
     started.current = true;
-    voice.current?.load();
     ringMusic.current?.load();
+    typing.current?.load();
     if (musicMissing.current || !music.current) {
       startSynth();
       return;
@@ -107,25 +96,6 @@ export function AudioController({ children }: { children: React.ReactNode }) {
     synth.current?.setMuted(next);
   }, []);
 
-  const playVoice = useCallback(() => {
-    return new Promise<boolean>((resolve) => {
-      if (!voice.current || !voiceReady.current) {
-        resolve(false);
-        return;
-      }
-      finishVoice.current = (played) => {
-        finishVoice.current = null;
-        resolve(played);
-      };
-      voice.current.play();
-    });
-  }, []);
-
-  const stopVoice = useCallback(() => {
-    voice.current?.stop();
-    finishVoice.current?.(true);
-  }, []);
-
   const playRingMusic = useCallback(() => {
     const howl = ringMusic.current;
     if (!howl) return;
@@ -138,9 +108,18 @@ export function AudioController({ children }: { children: React.ReactNode }) {
     if (howl?.playing()) howl.fade(howl.volume(), 0, 1200);
   }, []);
 
+  const startTyping = useCallback(() => {
+    const howl = typing.current;
+    if (started.current && howl && !howl.playing()) howl.play();
+  }, []);
+
+  const stopTyping = useCallback(() => {
+    typing.current?.stop();
+  }, []);
+
   const api = useMemo<AudioApi>(
-    () => ({ muted, start, toggleMute, setMusicLevel, playVoice, stopVoice, playRingMusic, fadeRingMusic }),
-    [muted, start, toggleMute, setMusicLevel, playVoice, stopVoice, playRingMusic, fadeRingMusic],
+    () => ({ muted, start, toggleMute, setMusicLevel, playRingMusic, fadeRingMusic, startTyping, stopTyping }),
+    [muted, start, toggleMute, setMusicLevel, playRingMusic, fadeRingMusic, startTyping, stopTyping],
   );
 
   return <AudioContextValue.Provider value={api}>{children}</AudioContextValue.Provider>;

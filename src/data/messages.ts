@@ -67,7 +67,6 @@ const ar = {
     whatsapp: "ابعتيلي الرقم على واتساب",
     whatsappText: "السلام عليكم يا حليم، موافقة على بركة الله 🤍\nرقم بابا: ",
     signature: "إسراء وحليم",
-    voiceLabel: "اسمعي",
   },
   ui: {
     skip: "تخطّي",
@@ -83,6 +82,8 @@ const ar = {
     openFrame: "افتحي",
     revealReason: "اكشفي",
     switchLanguage: "English",
+    restart: "ابدئي من الأول",
+    restartConfirm: "متأكدة؟",
   },
 };
 
@@ -150,7 +151,6 @@ const en: Messages = {
     whatsapp: "SEND IT ON WHATSAPP",
     whatsappText: "Assalamu alaikum Haleem, I accept, with Allah's blessing 🤍\nMy father's number: ",
     signature: "Esraa & Haleem",
-    voiceLabel: "LISTEN",
   },
   ui: {
     skip: "SKIP",
@@ -166,6 +166,8 @@ const en: Messages = {
     openFrame: "Open",
     revealReason: "Reveal",
     switchLanguage: "العربية",
+    restart: "Start again",
+    restartConfirm: "Are you sure?",
   },
 };
 

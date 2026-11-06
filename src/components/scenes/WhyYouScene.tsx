@@ -94,7 +94,7 @@ export function WhyYouScene({ onNext, revisit }: SceneProps) {
       <motion.h2
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, delay: 0.3 }}
+        transition={{ duration: 0.8 }}
         className="shrink-0 font-display text-4xl font-light ltr:italic md:text-6xl"
       >
         {whyYou.heading}
@@ -112,7 +112,7 @@ export function WhyYouScene({ onNext, revisit }: SceneProps) {
             key={reason.title}
             initial={{ opacity: 0, y: 26 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 + i * 0.15, ease: CINEMATIC_EASE }}
+            transition={{ duration: 1, delay: 0.15 + i * 0.1, ease: CINEMATIC_EASE }}
             className={`md:col-span-2 ${
               i === whyYou.reasons.length - 1 ? "col-span-2 md:col-span-3" : ""
             } ${i === whyYou.reasons.length - 2 ? "md:col-span-3" : ""}`}

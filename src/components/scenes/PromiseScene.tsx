@@ -11,15 +11,16 @@ import type { SceneProps } from "@/lib/constants";
 export function PromiseScene({ onNext, revisit }: SceneProps) {
   const { promise } = useMessages();
   const { root, done, skip } = useSceneTimeline(
-    (tl) => {
-      tl.to("[data-photo]", { opacity: 1, duration: 3, ease: "sine.inOut" }, 0);
+    (tl, sound) => {
+      tl.to("[data-photo]", { opacity: 1, duration: 1.5, ease: "sine.inOut" }, 0);
       promise.lines.forEach((_, i) => {
-        revealText(tl, `[data-reveal="line-${i}"]`, i === 0 ? 1.5 : ">+1.3", {
+        revealText(tl, `[data-reveal="line-${i}"]`, i === 0 ? 0.2 : ">+0.5", {
           stagger: 0.14,
-          duration: 1.1,
+          duration: 0.8,
+          sound,
         });
       });
-      revealText(tl, '[data-reveal="closing"]', ">+1.8", { stagger: 0.05 });
+      revealText(tl, '[data-reveal="closing"]', ">+0.8", { stagger: 0.05, sound });
     },
     { instant: revisit },
   );

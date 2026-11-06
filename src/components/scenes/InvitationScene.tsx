@@ -17,12 +17,13 @@ export function InvitationScene({ onNext, revisit }: SceneProps) {
   const [sceneReady, setSceneReady] = useState(false);
 
   const { root, done, skip } = useSceneTimeline(
-    (tl) => {
-      tl.to("[data-spotlight]", { opacity: 1, duration: 2.4, ease: "sine.inOut" }, 0.2);
+    (tl, sound) => {
+      tl.to("[data-spotlight]", { opacity: 1, duration: 1.4, ease: "sine.inOut" }, 0);
       tl.fromTo("[data-zoom]", { scale: 1.18 }, { scale: 1, duration: 12, ease: "sine.out" }, 0);
       invitation.lines.forEach((_, i) => {
-        revealText(tl, `[data-reveal="line-${i}"]`, i === 0 ? 1 : ">+0.5", {
+        revealText(tl, `[data-reveal="line-${i}"]`, i === 0 ? 0.15 : ">+0.3", {
           stagger: i === 2 ? 0.03 : 0.035,
+          sound,
         });
       });
       tl.call(() => setSceneReady(true), undefined, ">+0.2");

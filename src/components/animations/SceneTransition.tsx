@@ -11,7 +11,7 @@ export function SceneTransition({ children }: { children: React.ReactNode }) {
       initial={{ opacity: 0, scale: 1.04 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.98 }}
-      transition={{ duration: 1.1, ease: CINEMATIC_EASE }}
+      transition={{ duration: 0.6, ease: CINEMATIC_EASE }}
     >
       {children}
     </motion.div>

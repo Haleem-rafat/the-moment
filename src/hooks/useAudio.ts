@@ -8,12 +8,12 @@ export interface AudioApi {
   start: () => void;
   toggleMute: () => void;
   setMusicLevel: (level: number, fadeMs?: number) => void;
-  /** Plays the voice message. Resolves false straight away if there is no file. */
-  playVoice: () => Promise<boolean>;
-  stopVoice: () => void;
   /** The short piece that plays once as the ring box opens. */
   playRingMusic: () => void;
   fadeRingMusic: () => void;
+  /** Keyboard sound for text that is appearing. Stays silent until sound has been unlocked by a tap. */
+  startTyping: () => void;
+  stopTyping: () => void;
 }
 
 export const AudioContextValue = createContext<AudioApi | null>(null);

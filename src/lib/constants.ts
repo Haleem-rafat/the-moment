@@ -29,9 +29,8 @@ export const PARTICLE_DENSITY: Record<Scene, number> = {
 
 /** Music volume at each point of the story. */
 export const MUSIC_LEVEL = {
-  base: 0.5,
-  hush: 0.07,
-  underVoice: 0.1,
-  swell: 0.85,
-  gentle: 0.3,
+  base: 0.8,
+  hush: 0.14,
+  swell: 1,
+  gentle: 0.5,
 } as const;

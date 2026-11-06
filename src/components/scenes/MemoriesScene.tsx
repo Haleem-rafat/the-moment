@@ -27,8 +27,8 @@ export function MemoriesScene({ onNext, revisit }: SceneProps) {
       tl.fromTo(
         "[data-memory]",
         { opacity: 0, y: 46, scale: 0.94 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.1, stagger: 0.13, ease: "power3.out" },
-        0.2,
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.1, ease: "power3.out" },
+        0,
       );
     },
     { instant: revisit },
