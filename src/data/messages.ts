@@ -27,6 +27,7 @@ const ar = {
     heading: "لسه مفيش صور بتجمعنا...",
     closing: "وعشان البراويز دي تتملى صح، محتاجك تكملي معايا للآخر.",
     button: "هكمّل للآخر",
+    next: "اللي بعدها",
   },
   whyYou: {
     heading: "ليه إنتي؟",
@@ -108,6 +109,7 @@ const en: Messages = {
     heading: "We have no photos together yet...",
     closing: "For these frames to be filled the right way, I need you to see this through to the end.",
     button: "I'LL KEEP GOING",
+    next: "NEXT",
   },
   whyYou: {
     heading: "Why you?",

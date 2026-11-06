@@ -14,9 +14,9 @@ import type { SceneProps } from "@/lib/constants";
 
 const ROTATIONS = [-2.5, 1.8, -1.2, 2.6, -2, 1.4, -1.8];
 const PARALLAX_PX = [14, 24, 10, 20];
-/** How long a frame stays, so its line can be read. */
-const holdFor = (text: string) => Math.min(5200, 2200 + text.length * 26);
 const SLIDE_MS = 750;
+/** The flash plays on the card for this long before the frame zooms open. */
+const FLASH_MS = 750;
 
 export function MemoriesScene({ onNext, revisit }: SceneProps) {
   const { frames: memories, memoriesCopy } = useMessages();
@@ -66,7 +66,8 @@ export function MemoriesScene({ onNext, revisit }: SceneProps) {
     return () => window.removeEventListener("mousemove", onMove);
   }, [reduced]);
 
-  // The frames play by themselves: each slides to the center, then the camera clicks.
+  // The frames play by themselves: each slides to the center, the camera clicks,
+  // it zooms open, and the next one starts once she closes it.
   useEffect(() => {
     let cancelled = false;
     const waitFor = async (ms: number) => {
@@ -91,7 +92,11 @@ export function MemoriesScene({ onNext, revisit }: SceneProps) {
         playShutter();
         const flash = cards.current[i]?.querySelector("[data-flash]");
         if (flash && !reduced) gsap.fromTo(flash, { opacity: 0.9 }, { opacity: 0, duration: 0.65, ease: "power2.out" });
-        await waitFor(holdFor(memories[i].description));
+        await waitFor(FLASH_MS);
+        if (cancelled || skipped.current) break;
+        paused.current = true;
+        setOpenIndex(i);
+        await waitFor(100);
       }
       if (!cancelled) setReachedEnd(true);
     })();
@@ -173,6 +178,13 @@ export function MemoriesScene({ onNext, revisit }: SceneProps) {
                 {opened.description}
               </span>
             </figcaption>
+            <button
+              type="button"
+              onClick={() => setOpenIndex(null)}
+              className="mt-3 min-h-11 w-full cursor-pointer rounded-full bg-burgundy text-sm font-medium text-champagne ltr:text-xs ltr:tracking-[0.28em]"
+            >
+              {memoriesCopy.next}
+            </button>
           </figure>
         )}
       </Dialog>

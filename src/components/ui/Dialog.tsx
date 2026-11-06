@@ -52,7 +52,7 @@ export function Dialog({ open, onClose, label, children }: DialogProps) {
           </button>
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            initial={{ scale: 0.92, y: 16 }}
+            initial={{ scale: 0.72, y: 24 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.96 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}

@@ -8,7 +8,7 @@ Live at https://moment.framecasts.com
 
 1. **Invitation:** a quiet opening with a button to begin.
 2. **Mystery:** a short message, plus a hidden light that opens a secret note.
-3. **Frames:** animated illustrations in place of photos, each with a personal line. They play by themselves, with a camera click and flash.
+3. **Frames:** animated illustrations in place of photos, each with a personal line. They play by themselves: a camera click and flash, then the frame zooms open, and the next one starts when she closes it.
 4. **Why you:** five cards, each revealing a quality when touched.
 5. **Promise:** a written promise, line by line.
 6. **Finale:** a 3D ring box opens to its own music, then the question, as text only.
