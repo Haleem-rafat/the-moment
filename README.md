@@ -35,3 +35,11 @@ npm run dev
 - سمّي مشروع Vercel اسم محايد زي `the-moment`، لأن الرابط بيظهر لها. ما تكتبش فيه `proposal` أو `wedding`.
 - جرّب الرحلة كاملة على موبايل حقيقي.
 - على الآيفون، زرار الصامت بيكتم الصوت. الشاشة الأولى بتنبهها لده.
+
+## النشر
+
+الموقع شغال على `https://moment.framecasts.com`، على سيرفر Framecast (`/srv/apps/the-moment`). لنشر أي تعديل:
+
+```bash
+./deploy/deploy.sh
+```
