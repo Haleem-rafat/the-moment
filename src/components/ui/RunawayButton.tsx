@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useAudio } from "@/hooks/useAudio";
 
 const EDGE_MARGIN = 16;
 const TOP_MARGIN = 64;
@@ -12,6 +13,7 @@ const BUTTON_GAP = 10;
 
 /** The playful "no": it dodges every mouse and finger, and can never be pressed. */
 export function RunawayButton({ labels }: { labels: string[] }) {
+  const { playDodge } = useAudio();
   const ref = useRef<HTMLButtonElement>(null);
   const homeRect = useRef<DOMRect | null>(null);
   const lastMove = useRef(0);
@@ -60,6 +62,7 @@ export function RunawayButton({ labels }: { labels: string[] }) {
     }
     setOffset({ x: x - home.left, y: y - home.top });
     setTries((t) => t + 1);
+    playDodge();
   };
 
   const fleeRef = useRef(flee);

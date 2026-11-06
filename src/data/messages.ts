@@ -25,7 +25,6 @@ const ar = {
   secretMessage: "فيه كلمة نفسي أقولهالك من زمان...",
   memoriesCopy: {
     heading: "لسه مفيش صور بتجمعنا...",
-    swipeHint: "اسحبي وشوفي البراويز",
     closing: "وعشان البراويز دي تتملى صح، محتاجك تكملي معايا للآخر.",
     button: "هكمّل للآخر",
   },
@@ -77,8 +76,6 @@ const ar = {
     backTo: "ارجعي للجزء",
     secretLabel: "نور صغير مستخبي",
     secretDialog: "رسالة سرية",
-    forward: "البرواز اللي بعده",
-    backward: "البرواز اللي قبله",
     openFrame: "افتحي",
     revealReason: "اكشفي",
     switchLanguage: "English",
@@ -109,7 +106,6 @@ const en: Messages = {
   secretMessage: "There's something I've wanted to tell you for a long time...",
   memoriesCopy: {
     heading: "We have no photos together yet...",
-    swipeHint: "Swipe through the frames",
     closing: "For these frames to be filled the right way, I need you to see this through to the end.",
     button: "I'LL KEEP GOING",
   },
@@ -161,8 +157,6 @@ const en: Messages = {
     backTo: "Go back to part",
     secretLabel: "A hidden light",
     secretDialog: "A secret message",
-    forward: "Next frame",
-    backward: "Previous frame",
     openFrame: "Open",
     revealReason: "Reveal",
     switchLanguage: "العربية",

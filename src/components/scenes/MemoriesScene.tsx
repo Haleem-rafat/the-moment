@@ -3,24 +3,30 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CinematicButton } from "@/components/ui/CinematicButton";
 import { Dialog } from "@/components/ui/Dialog";
 import { EmptyFrame, MemoryCard } from "@/components/ui/MemoryCard";
+import { SkipButton } from "@/components/ui/SkipButton";
+import { useAudio } from "@/hooks/useAudio";
 import { useSceneTimeline } from "@/hooks/useSceneTimeline";
 import { useMessages } from "@/hooks/useLocale";
 import type { SceneProps } from "@/lib/constants";
 
 const ROTATIONS = [-2.5, 1.8, -1.2, 2.6, -2, 1.4, -1.8];
 const PARALLAX_PX = [14, 24, 10, 20];
+/** How long a frame stays, so its line can be read. */
+const holdFor = (text: string) => Math.min(5200, 2200 + text.length * 26);
+const SLIDE_MS = 750;
 
 export function MemoriesScene({ onNext, revisit }: SceneProps) {
-  const { frames: memories, memoriesCopy, ui, isRtl } = useMessages();
+  const { frames: memories, memoriesCopy } = useMessages();
+  const { playShutter } = useAudio();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [reachedEnd, setReachedEnd] = useState(revisit);
-  const scroller = useRef<HTMLDivElement>(null);
   const cards = useRef<(HTMLButtonElement | null)[]>([]);
   const reduced = useReducedMotion();
+  const paused = useRef(false);
+  const skipped = useRef(false);
 
   const { root } = useSceneTimeline(
     (tl) => {
@@ -60,36 +66,50 @@ export function MemoriesScene({ onNext, revisit }: SceneProps) {
     return () => window.removeEventListener("mousemove", onMove);
   }, [reduced]);
 
-  // Fires a camera flash on every other frame, and notices when the last one is seen.
+  // The frames play by themselves: each slides to the center, then the camera clicks.
   useEffect(() => {
-    const flashed = new Set<Element>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const i = cards.current.indexOf(entry.target as HTMLButtonElement);
-          if (i === memories.length - 1) setReachedEnd(true);
-          if (i % 2 !== 0 || flashed.has(entry.target) || reduced) continue;
-          flashed.add(entry.target);
-          const flash = entry.target.querySelector("[data-flash]");
-          if (flash) {
-            gsap.fromTo(flash, { opacity: 0.85 }, { opacity: 0, duration: 0.9, ease: "power2.out", delay: 0.25 });
-          }
-        }
-      },
-      { root: scroller.current, threshold: 0.6 },
-    );
-    cards.current.forEach((card) => card && observer.observe(card));
-    return () => observer.disconnect();
-  }, [reduced, memories]);
+    let cancelled = false;
+    const waitFor = async (ms: number) => {
+      let left = ms;
+      while (left > 0 && !cancelled && !skipped.current) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (!paused.current) left -= 100;
+      }
+    };
+    const show = (i: number) =>
+      cards.current[i]?.scrollIntoView({ inline: "center", block: "nearest", behavior: reduced ? "auto" : "smooth" });
 
-  const scrollByCard = (direction: 1 | -1) => {
-    const first = cards.current[0];
-    if (!first || !scroller.current) return;
-    scroller.current.scrollBy({
-      left: direction * (first.offsetWidth + 40),
-      behavior: reduced ? "auto" : "smooth",
-    });
+    void (async () => {
+      await waitFor(1200);
+      for (let i = 0; i < memories.length; i += 1) {
+        if (cancelled || skipped.current) break;
+        if (i > 0) {
+          show(i);
+          await waitFor(SLIDE_MS);
+        }
+        if (cancelled || skipped.current) break;
+        playShutter();
+        const flash = cards.current[i]?.querySelector("[data-flash]");
+        if (flash && !reduced) gsap.fromTo(flash, { opacity: 0.9 }, { opacity: 0, duration: 0.65, ease: "power2.out" });
+        await waitFor(holdFor(memories[i].description));
+      }
+      if (!cancelled) setReachedEnd(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [memories, playShutter, reduced]);
+
+  // Opening a frame holds the show until it is closed.
+  useEffect(() => {
+    paused.current = openIndex !== null;
+  }, [openIndex]);
+
+  const skipShow = () => {
+    skipped.current = true;
+    cards.current[memories.length - 1]?.scrollIntoView({ inline: "center", block: "nearest", behavior: "auto" });
+    setReachedEnd(true);
   };
 
   const opened = openIndex === null ? null : memories[openIndex];
@@ -102,13 +122,7 @@ export function MemoriesScene({ onNext, revisit }: SceneProps) {
 
       <div className="relative w-full shrink-0">
         <div
-          ref={scroller}
-          onWheel={(e) => {
-            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-              e.currentTarget.scrollLeft += isRtl ? -e.deltaY : e.deltaY;
-            }
-          }}
-          className="no-scrollbar flex w-full items-center gap-10 overflow-x-auto py-7 pointer-coarse:snap-x pointer-coarse:snap-mandatory"
+          className="no-scrollbar flex w-full items-center gap-10 overflow-x-hidden py-7"
           style={{ paddingInline: "max(16vw, calc(50vw - 160px))" }}
         >
           {memories.map((memory, i) => (
@@ -125,43 +139,23 @@ export function MemoriesScene({ onNext, revisit }: SceneProps) {
           ))}
         </div>
 
-        {[-1, 1].map((direction) => (
-          <button
-            key={direction}
-            type="button"
-            onClick={() => scrollByCard(direction as 1 | -1)}
-            aria-label={direction < 0 === isRtl ? ui.forward : ui.backward}
-            className={`absolute top-1/2 hidden size-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-champagne/25 text-champagne/70 transition-colors hover:border-rose-gold hover:text-champagne pointer-fine:flex ${
-              direction < 0 ? "left-6" : "right-6"
-            }`}
-          >
-            {direction < 0 ? (
-              <ChevronLeft size={20} strokeWidth={1.5} />
-            ) : (
-              <ChevronRight size={20} strokeWidth={1.5} />
-            )}
-          </button>
-        ))}
       </div>
 
-      <div className="mt-1 flex shrink-0 flex-col items-center gap-3">
+      <div className="mt-1 flex min-h-32 shrink-0 flex-col items-center gap-3">
         <motion.p
-          key={reachedEnd ? "closing" : "hint"}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: reachedEnd ? 1 : 0.6 }}
+          initial={false}
+          animate={{ opacity: reachedEnd ? 1 : 0 }}
           transition={{ duration: 1 }}
-          className={
-            reachedEnd
-              ? "px-6 text-center font-script text-2xl leading-snug text-balance text-[#d8ae90]"
-              : "text-xs text-champagne"
-          }
+          className="px-6 text-center font-script text-2xl leading-snug text-balance text-[#d8ae90]"
         >
-          {reachedEnd ? memoriesCopy.closing : memoriesCopy.swipeHint}
+          {memoriesCopy.closing}
         </motion.p>
         <CinematicButton show={reachedEnd} onClick={onNext}>
           {memoriesCopy.button}
         </CinematicButton>
       </div>
+
+      <SkipButton show={!reachedEnd} onSkip={skipShow} />
 
       <Dialog
         open={opened !== null}

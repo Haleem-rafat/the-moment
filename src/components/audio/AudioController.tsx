@@ -12,6 +12,10 @@ export function AudioController({ children }: { children: React.ReactNode }) {
   const music = useRef<HowlType | null>(null);
   const ringMusic = useRef<HowlType | null>(null);
   const typing = useRef<HowlType | null>(null);
+  const shutter = useRef<HowlType | null>(null);
+  const tap = useRef<HowlType | null>(null);
+  const zaghrouta = useRef<HowlType | null>(null);
+  const dodge = useRef<HowlType | null>(null);
   const synth = useRef<AmbientSynth | null>(null);
   const musicMissing = useRef(false);
   const started = useRef(false);
@@ -43,6 +47,10 @@ export function AudioController({ children }: { children: React.ReactNode }) {
         },
       });
       ringMusic.current = new Howl({ src: [proposal.media.ringOpen], preload: false });
+      zaghrouta.current = new Howl({ src: [proposal.media.zaghrouta], preload: false });
+      dodge.current = new Howl({ src: [proposal.media.dodge], preload: false, volume: 0.8 });
+      shutter.current = new Howl({ src: [proposal.media.shutter] });
+      tap.current = new Howl({ src: [proposal.media.tap], volume: 0.6 });
       typing.current = new Howl({ src: [proposal.media.typing], loop: true, volume: 0.9, preload: false });
     });
 
@@ -51,6 +59,10 @@ export function AudioController({ children }: { children: React.ReactNode }) {
       music.current?.unload();
       ringMusic.current?.unload();
       typing.current?.unload();
+      shutter.current?.unload();
+      tap.current?.unload();
+      zaghrouta.current?.unload();
+      dodge.current?.unload();
       synth.current?.stop();
       synth.current = null;
       started.current = false;
@@ -73,6 +85,8 @@ export function AudioController({ children }: { children: React.ReactNode }) {
     started.current = true;
     ringMusic.current?.load();
     typing.current?.load();
+    zaghrouta.current?.load();
+    dodge.current?.load();
     if (musicMissing.current || !music.current) {
       startSynth();
       return;
@@ -117,9 +131,26 @@ export function AudioController({ children }: { children: React.ReactNode }) {
     typing.current?.stop();
   }, []);
 
+  const playShutter = useCallback(() => {
+    if (started.current) shutter.current?.play();
+  }, []);
+
+  const playTap = useCallback(() => {
+    tap.current?.play();
+  }, []);
+
+  const playZaghrouta = useCallback(() => {
+    zaghrouta.current?.stop();
+    zaghrouta.current?.play();
+  }, []);
+
+  const playDodge = useCallback(() => {
+    if (started.current) dodge.current?.play();
+  }, []);
+
   const api = useMemo<AudioApi>(
-    () => ({ muted, start, toggleMute, setMusicLevel, playRingMusic, fadeRingMusic, startTyping, stopTyping }),
-    [muted, start, toggleMute, setMusicLevel, playRingMusic, fadeRingMusic, startTyping, stopTyping],
+    () => ({ muted, start, toggleMute, setMusicLevel, playRingMusic, fadeRingMusic, startTyping, stopTyping, playShutter, playTap, playZaghrouta, playDodge }),
+    [muted, start, toggleMute, setMusicLevel, playRingMusic, fadeRingMusic, startTyping, stopTyping, playShutter, playTap, playZaghrouta, playDodge],
   );
 
   return <AudioContextValue.Provider value={api}>{children}</AudioContextValue.Provider>;

@@ -5,11 +5,11 @@ import dynamic from "next/dynamic";
 import { AnimatePresence, MotionConfig } from "framer-motion";
 import { ParticleBackground } from "./animations/ParticleBackground";
 import { SceneTransition } from "./animations/SceneTransition";
+import { TouchHearts } from "./animations/TouchHearts";
 import { InvitationScene } from "./scenes/InvitationScene";
 import { ProgressIndicator } from "./ui/ProgressIndicator";
 import { RestartButton } from "./ui/RestartButton";
 import { SoundToggle } from "./ui/SoundToggle";
-import { useAudio } from "@/hooks/useAudio";
 import { useLocale, useMessages } from "@/hooks/useLocale";
 import { useSceneNavigation } from "@/hooks/useSceneNavigation";
 import { PARTICLE_DENSITY } from "@/lib/constants";
@@ -23,18 +23,10 @@ const ProposalScene = dynamic(() => import("./scenes/ProposalScene").then((m) =>
 
 export function Experience() {
   const { hydrated, index, furthest, scene, next, goTo } = useSceneNavigation();
-  const { start } = useAudio();
   const { locale, toggleLocale } = useLocale();
   const { ui } = useMessages();
 
   useEffect(() => preloadExperience(), []);
-
-  // After a reload past the first scene, the next touch brings the music back.
-  useEffect(() => {
-    if (!hydrated || index === 0) return;
-    window.addEventListener("pointerdown", start, { once: true });
-    return () => window.removeEventListener("pointerdown", start);
-  }, [hydrated, index, start]);
 
   if (!hydrated) {
     return (
@@ -53,6 +45,7 @@ export function Experience() {
     <MotionConfig reducedMotion="user">
       <main className="wine-stage fixed inset-0 overflow-hidden">
         <ParticleBackground density={PARTICLE_DENSITY[scene]} />
+        <TouchHearts />
 
         <div className="absolute inset-0 z-10">
           <AnimatePresence mode="wait">

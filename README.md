@@ -8,7 +8,7 @@ Live at https://moment.framecasts.com
 
 1. **Invitation:** a quiet opening with a button to begin.
 2. **Mystery:** a short message, plus a hidden light that opens a secret note.
-3. **Frames:** animated illustrations in place of photos, each with a personal line.
+3. **Frames:** animated illustrations in place of photos, each with a personal line. They play by themselves, with a camera click and flash.
 4. **Why you:** five cards, each revealing a quality when touched.
 5. **Promise:** a written promise, line by line.
 6. **Finale:** a 3D ring box opens to its own music, then the question, as text only.
@@ -46,6 +46,10 @@ Audio files live in `public/audio/`:
 | --- | --- |
 | `theme.mp3` | Background music for the whole story |
 | `ring-open.mp3` | Once, as the ring box opens |
+| `zaghrouta.mp3` | When she says yes |
+| `dodge.mp3` | Each time the no button runs away |
+| `shutter.mp3` | Camera click as each frame appears |
+| `tap.mp3` | Soft sound on every touch |
 | `typing.mp3` | Keyboard sound while text appears, after her first tap |
 
 Keep files small for slow connections. If `theme.mp3` is missing, a soft generated score plays.
@@ -77,6 +81,10 @@ Each project gets its own container and subdomain. Full steps are in `/srv/apps/
 ```bash
 /srv/apps/bin/app-site my-app my-app.framecasts.com
 ```
+
+## Touch
+
+Every touch drops hearts from the finger, with a soft sound and a small vibration. Android uses the Vibration API. iPhone has no such API, so it uses a hidden native switch, which gives a haptic on recent iOS versions only. The first touch anywhere also starts the music, because browsers block sound before it.
 
 ## Start again
 

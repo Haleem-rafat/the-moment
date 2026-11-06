@@ -11,6 +11,13 @@ export interface AudioApi {
   /** The short piece that plays once as the ring box opens. */
   playRingMusic: () => void;
   fadeRingMusic: () => void;
+  playZaghrouta: () => void;
+  /** Stays silent until sound has been unlocked by a tap. */
+  playDodge: () => void;
+  /** One camera click. Stays silent until sound has been unlocked by a tap. */
+  playShutter: () => void;
+  /** The soft sound of a touch. */
+  playTap: () => void;
   /** Keyboard sound for text that is appearing. Stays silent until sound has been unlocked by a tap. */
   startTyping: () => void;
   stopTyping: () => void;
