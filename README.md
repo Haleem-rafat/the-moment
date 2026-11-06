@@ -60,6 +60,10 @@ Credit: `zaghrouta.mp3` is from [Ululating](https://freesound.org/people/Benbonc
 
 Set `whatsappNumber` in `src/data/proposal.ts`, using the country code without a plus sign. An empty value hides the button. The number is visible in the page code, so share the link only with her.
 
+## Link preview
+
+The title and description are in `src/app/layout.tsx`, and the image is `public/og.jpg` (1200 × 630). They avoid any word or picture that gives away the question. WhatsApp keeps a preview once it has seen a link, so send the link to yourself first to check it.
+
 ## Deploy
 
 The site runs in its own container on the Framecast server, at `/srv/apps/the-moment`. Build and publish any change with:

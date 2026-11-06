@@ -37,11 +37,25 @@ const script = Aref_Ruqaa({
   variable: "--font-arabic-script",
 });
 
+const TITLE = "يا إسراء… عندي حاجة عايز أوريهالك";
+const DESCRIPTION = "كل بداية جميلة ليها لحظة. افتحي اللينك وعلّي الصوت.";
+
 // Deliberately vague: a link preview or browser tab must not spoil the surprise.
 export const metadata: Metadata = {
-  title: "اللحظة | The Moment",
-  description: "كل بداية جميلة ليها لحظة.",
+  metadataBase: new URL("https://moment.framecasts.com"),
+  title: TITLE,
+  description: DESCRIPTION,
   robots: { index: false, follow: false, nocache: true },
+  openGraph: {
+    type: "website",
+    locale: "ar_EG",
+    url: "/",
+    siteName: "اللحظة",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: TITLE, type: "image/jpeg" }],
+  },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: ["/og.jpg"] },
 };
 
 export const viewport: Viewport = {

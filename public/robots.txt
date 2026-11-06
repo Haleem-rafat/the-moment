@@ -1,2 +1,18 @@
+# Private link: not for search engines, but messaging apps may read the preview.
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
 User-agent: *
 Disallow: /
