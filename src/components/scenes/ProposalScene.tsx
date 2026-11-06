@@ -147,7 +147,7 @@ export function ProposalScene() {
     // The zaghrouta leads; the song comes back up once it ends.
     playZaghrouta();
     setMusicLevel(MUSIC_LEVEL.gentle, 400);
-    gsap.delayedCall(5.5, () => setMusicLevel(MUSIC_LEVEL.swell, 2500));
+    gsap.delayedCall(3.6, () => setMusicLevel(MUSIC_LEVEL.swell, 2500));
   };
 
   // A real, unhurried choice: the music softens and nothing asks her to hurry back.

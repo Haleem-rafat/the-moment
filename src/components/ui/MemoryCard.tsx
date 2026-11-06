@@ -55,9 +55,6 @@ export const MemoryCard = forwardRef<HTMLButtonElement, MemoryCardProps>(functio
       >
         <EmptyFrame number={number} scene={memory.scene} />
         <span className="mt-2 block font-script text-xl leading-snug">{memory.title}</span>
-        <span className="mt-1 block min-h-[6em] text-xs leading-relaxed text-midnight/75">
-          {memory.description}
-        </span>
       </span>
     </button>
   );

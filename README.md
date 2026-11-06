@@ -54,6 +54,8 @@ Audio files live in `public/audio/`:
 
 Keep files small for slow connections. If `theme.mp3` is missing, a soft generated score plays.
 
+Credit: `zaghrouta.mp3` is from [Ululating](https://freesound.org/people/Benboncan/sounds/62876/) by Benboncan, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), with a fade and volume leveling added.
+
 ## WhatsApp button
 
 Set `whatsappNumber` in `src/data/proposal.ts`, using the country code without a plus sign. An empty value hides the button. The number is visible in the page code, so share the link only with her.
